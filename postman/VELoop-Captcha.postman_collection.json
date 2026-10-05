@@ -1,0 +1,157 @@
+{
+  "info": {
+    "name": "VELoop CAPTCHA Earn",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:4000" },
+    { "key": "token", "value": "" },
+    { "key": "challengeId", "value": "" },
+    { "key": "selectedOption", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Login",
+      "request": {
+        "method": "POST",
+        "url": "{{baseUrl}}/api/auth/login",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"email\":\"demo@veloop.test\",\"password\":\"DemoPass123!\"}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "Current CAPTCHA",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/captcha/current"
+      }
+    },
+    {
+      "name": "New CAPTCHA",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/captcha/new",
+        "body": { "mode": "raw", "raw": "{}", "options": { "raw": { "language": "json" } } }
+      }
+    },
+    {
+      "name": "Verify Correct",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/captcha/verify",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"challengeId\":\"{{challengeId}}\",\"selectedOption\":\"{{selectedOption}}\"}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "Verify Wrong",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/captcha/verify",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"challengeId\":\"{{challengeId}}\",\"selectedOption\":\"not-the-answer\"}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "Claim",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/captcha/claim",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"challengeId\":\"{{challengeId}}\"}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "Wallet",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/wallet/gems"
+      }
+    },
+    {
+      "name": "History",
+      "request": {
+        "method": "GET",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/captcha/history"
+      }
+    },
+    {
+      "name": "Negative - Invalid challenge",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/captcha/verify",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"challengeId\":\"CAP-INVALID\",\"selectedOption\":\"A\"}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "Negative - Duplicate verification",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/captcha/verify",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"challengeId\":\"{{challengeId}}\",\"selectedOption\":\"{{selectedOption}}\"}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "Negative - Duplicate claim",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/captcha/claim",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"challengeId\":\"{{challengeId}}\"}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "Negative - Fake reward payload",
+      "request": {
+        "method": "POST",
+        "header": [{ "key": "Authorization", "value": "Bearer {{token}}" }],
+        "url": "{{baseUrl}}/api/captcha/verify",
+        "body": {
+          "mode": "raw",
+          "raw": "{\"challengeId\":\"{{challengeId}}\",\"selectedOption\":\"{{selectedOption}}\",\"reward\":100000,\"isCorrect\":true,\"userId\":\"other-user\"}",
+          "options": { "raw": { "language": "json" } }
+        }
+      }
+    },
+    {
+      "name": "Negative - Unauthorized API",
+      "request": {
+        "method": "GET",
+        "url": "{{baseUrl}}/api/captcha/current"
+      }
+    }
+  ]
+}
